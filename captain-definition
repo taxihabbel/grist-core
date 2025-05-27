@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "templateId": "node/16",
+  "variables": [
+    {
+      "id": "GRIST_DATA_DIR",
+      "label": "Grist Data Directory (persisted)",
+      "defaultValue": "/usr/src/app/data"
+    },
+    {
+      "id": "GRIST_HOST",
+      "label": "Grist Hostname",
+      "defaultValue": "$$APP_HOSTNAME$$"
+    },
+    {
+      "id": "GRIST_PORT",
+      "label": "Grist Port",
+      "defaultValue": "80"
+    },
+    {
+      "id": "GRIST_DOCS_URL",
+      "label": "Grist Docs URL (optional)",
+      "defaultValue": ""
+    }
+  ],
+  "dockerfileLines": [
+    "FROM node:16-slim",
+    "WORKDIR /usr/src/app",
+    "COPY package*.json ./",
+    "RUN npm install",
+    "COPY . .",
+    "RUN npm run build",
+    "RUN pip install -r requirements.txt",
+    "EXPOSE 80",
+    "CMD [\"node\", \"./grist.js\", \"serve\"]"
+  ],
+  "postDeployScripts": [
+    "npm install"
+  ]
+}
